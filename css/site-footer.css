@@ -1,0 +1,13 @@
+/* ==========================================================================
+   Site footer.
+   ========================================================================== */
+
+.site-footer {
+  position: relative; z-index: 1; margin: auto 0 0 var(--sidebar-width); padding: 24px clamp(20px, 4vw, 40px) 28px;
+  border-top: 1px solid var(--edge-dark); box-shadow: inset 0 1px 0 var(--edge-light);
+  font: 400 11.5px/1 var(--font); letter-spacing: .1em; color: var(--muted);
+}
+
+@media (max-width: 999px) {
+  .site-footer { margin-top: 56px; }
+}

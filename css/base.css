@@ -1,0 +1,48 @@
+/* ==========================================================================
+   Base: reset, page shell, utilities, page backdrop.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--bg); }
+
+body {
+  display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh;
+  margin: 0; background: var(--bg); color: var(--text-2);
+  font: 400 17px/1.6 var(--font); -webkit-font-smoothing: antialiased; overflow-x: clip;
+}
+h1, h2, h3, p, ul, dl, dd { margin: 0; }
+ul { padding: 0; list-style: none; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--accent); color: var(--bg); }
+
+main { position: relative; z-index: 1; flex: 0 0 auto; display: flex; flex-direction: column; margin-left: var(--sidebar-width); }
+
+/* Utilities */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Page backdrop: subtle tonal variation so the background is not flat black */
+.backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.backdrop::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 78% 14%, rgba(17, 28, 41, .85), transparent 70%),
+    radial-gradient(ellipse 60% 55% at 12% 88%, rgba(14, 25, 37, .7), transparent 72%);
+}
+
+@media (max-width: 899px) {
+  :root { --sidebar-width: 0px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@media print {
+  .sidebar, .backdrop { display: none; }
+  main, .site-footer { margin-left: 0; }
+  body { background: #fff; color: #000; }
+}

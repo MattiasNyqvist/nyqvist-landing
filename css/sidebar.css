@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Sidebar: logo, main menu and social links.
+   Desktop: fixed vertical rail on the left. Mobile (<=899px): compact top bar.
+   ========================================================================== */
+
+.sidebar {
+  position: fixed; z-index: 30; inset: 0 auto 0 0; width: var(--sidebar-width);
+  display: flex; flex-direction: column; align-items: center; padding: 22px 0 24px;
+  background: rgba(9, 15, 22, .94); border-right: 1px solid var(--edge-dark); box-shadow: 1px 0 0 var(--edge-light);
+}
+
+/* ----- Logo ----- */
+.brand { position: relative; display: block; line-height: 0; padding: 2px; }
+.logo { width: 34px; height: auto; fill: var(--accent); transition: transform .35s var(--ease), fill .25s; }
+.brand:hover .logo { transform: translateY(-2px); fill: var(--accent-hi); }
+
+/* ----- Main menu (vertical text, reads bottom to top) ----- */
+.main-menu { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+.main-menu a {
+  position: relative; display: grid; place-items: center; min-width: 44px; padding: 14px 0;
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font: 400 15px/1 var(--font); letter-spacing: .08em; text-transform: lowercase; text-decoration: none; color: var(--muted);
+  transition: color .25s var(--ease);
+}
+.main-menu a::after { /* active/hover indicator line */
+  content: ""; position: absolute; left: 4px; top: 10px; bottom: 10px; width: 1px; background: var(--accent);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .35s var(--ease);
+}
+.main-menu a:hover, .main-menu a:focus-visible { color: var(--text); }
+.main-menu a[aria-current="page"] { color: var(--accent-hi); }
+.main-menu a:hover::after, .main-menu a:focus-visible::after, .main-menu a[aria-current="page"]::after { transform: scaleY(1); }
+.external-icon { display: inline-block; font-style: normal; transform: rotate(90deg); letter-spacing: 0; opacity: .75; }  /* the arrow stays upright inside the rotated link */
+
+/* ----- Social links ----- */
+.social-links { display: flex; flex-direction: column; gap: 2px; margin-top: 36px; margin-bottom: auto; }
+.social-links a { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 3px; color: var(--muted); transition: color .25s var(--ease); }
+.social-links a:hover, .social-links a:focus-visible { color: var(--accent-hi); }
+.social-links a::before { /* hover indicator line */
+  content: ""; position: absolute; right: 4px; top: 10px; bottom: 10px; width: 1px; background: var(--accent);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .35s var(--ease);
+}
+.social-links a:hover::before, .social-links a:focus-visible::before { transform: scaleY(1); }
+.social-links svg { width: 20px; height: 20px; transition: transform .25s var(--ease); }
+.social-links a:hover svg { transform: translateX(1px) scale(1.06); }
+
+/* ----- Tooltips (built from aria-label) ----- */
+.social-links a::after, .brand::after {
+  content: attr(aria-label); position: absolute; left: calc(100% + 12px); top: 50%; transform: translate(-4px, -50%);
+  padding: 7px 11px; white-space: nowrap; pointer-events: none;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
+  font: 400 11px/1 var(--font); letter-spacing: .08em; color: var(--text);
+  opacity: 0; transition: opacity .2s var(--ease), transform .2s var(--ease);
+}
+.social-links a:hover::after, .social-links a:focus-visible::after, .brand:hover::after, .brand:focus-visible::after { opacity: 1; transform: translate(0, -50%); }
+
+/* ----- Mobile: horizontal top bar ----- */
+@media (max-width: 899px) {
+  .sidebar {
+    position: sticky; top: 0; inset: auto; width: 100%; flex-direction: row; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 18px; background: rgba(9, 15, 22, .96);
+    border-right: 0; border-bottom: 1px solid var(--edge-dark); box-shadow: 0 1px 0 var(--edge-light);
+  }
+  .logo { width: 28px; }
+  .brand::after, .social-links a::after { display: none; }
+
+  .main-menu { flex-direction: row; gap: 0; margin: 0 4px 0 auto; }
+  .main-menu a { min-width: 0; height: 44px; padding: 0 11px; writing-mode: horizontal-tb; transform: none; font-size: 11px; letter-spacing: .16em; }
+  .main-menu a > span { white-space: nowrap; }
+  .external-icon { transform: none; }
+  .main-menu a::after { left: 11px; right: 11px; top: auto; bottom: 7px; width: auto; height: 1px; transform: scaleX(0); transform-origin: left; }
+  .main-menu a:hover::after, .main-menu a:focus-visible::after, .main-menu a[aria-current="page"]::after { transform: scaleX(1); }
+
+  .social-links { flex-direction: row; gap: 0; margin: 0 -4px 0 0; }
+  .social-links a { width: 40px; height: 44px; }
+  .social-links svg { width: 18px; height: 18px; }
+  .social-links a::before { left: 11px; right: 11px; top: auto; bottom: 7px; width: auto; height: 1px; transform: scaleX(0); transform-origin: left; }
+  .social-links a:hover::before, .social-links a:focus-visible::before { transform: scaleX(1); }
+}
+
+/* ----- Small phones: tighten the top bar so it never grows wider than the screen ----- */
+@media (max-width: 399px) {
+  .sidebar { gap: 4px; padding-inline: 14px 8px; }
+  .main-menu a { padding-inline: 8px; }
+  .social-links a { width: 32px; }
+}
+@media (max-width: 339px) {
+  .social-links a { width: 28px; }
+  .main-menu a { padding-inline: 6px; letter-spacing: .1em; }
+}

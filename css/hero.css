@@ -1,0 +1,136 @@
+/* ==========================================================================
+   Hero: headline, intro line with avatar, site name and the technical grid.
+   The file manager panel (file-manager.css) is the hero's second column on desktop.
+
+   Breakpoints: >=1000px two columns | <=999px stacked | <=899px mobile.
+   ========================================================================== */
+
+.hero {
+  --role-size: clamp(3.4rem, 8.3vw, 8.2rem);
+  position: relative; isolation: isolate; overflow: hidden;
+  container-type: inline-size;
+  min-height: clamp(540px, 78svh, 800px);
+  padding: 96px 24px 72px var(--hero-inset);
+}
+
+/* Site name, top-right corner */
+.site-name {
+  position: absolute; z-index: 3; top: 19.5px; right: 24px;
+  font: 400 30px/1 var(--font); letter-spacing: .01em; margin-right: -.01em; text-transform: lowercase; color: var(--lime);
+}
+
+.hero-copy { position: relative; width: fit-content; max-width: 100%; }
+
+/* Technical grid behind the whole hero (also faintly behind the file manager).
+   It is brightest around the intro line (--grid-x / --grid-y) and fades to the dark background in every
+   direction, always before it reaches an edge of the hero. */
+.hero::before {
+  --grid-x: calc(var(--hero-inset) + 12rem);
+  --grid-y: calc(96px + var(--role-size) * 3.4 + 3rem);
+  content: ""; position: absolute; inset: 0; z-index: -3; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(82, 134, 177, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(82, 134, 177, .08) 1px, transparent 1px),
+    linear-gradient(rgba(195, 202, 212, .028) 1px, transparent 1px), linear-gradient(90deg, rgba(195, 202, 212, .028) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  background-position: var(--hero-inset) 96px, var(--hero-inset) 96px, var(--hero-inset) 96px, var(--hero-inset) 96px;
+  /* Three masks, intersected: radial falloff from the bright point, plus soft fades towards each edge */
+  -webkit-mask-image:
+    radial-gradient(ellipse 100% 85% at var(--grid-x) var(--grid-y), #000 0%, rgba(0, 0, 0, .78) 22%, rgba(0, 0, 0, .52) 50%, rgba(0, 0, 0, .3) 75%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 91%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 100% 85% at var(--grid-x) var(--grid-y), #000 0%, rgba(0, 0, 0, .78) 22%, rgba(0, 0, 0, .52) 50%, rgba(0, 0, 0, .3) 75%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 91%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* Wandering light (js/light.js): large, very soft patches that drift and change shape behind the hero.
+   Above the grid, below all content; only transform and opacity change (GPU, no repaint). */
+.light-patch {
+  position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(112, 170, 214, .07) 0, rgba(112, 170, 214, .035) 45%, rgba(112, 170, 214, .01) 75%, transparent 100%);
+  opacity: 0; will-change: transform, opacity;  /* js/light.js sets opacity (0 = no light at all) and the transition */
+}
+
+/* Terminal prompt above the headline */
+.terminal-prompt { position: absolute; top: -40px; left: 3px; font: 400 12px/1 var(--font); letter-spacing: .06em; color: var(--muted); }
+.terminal-prompt-symbol { margin-right: .55em; color: var(--accent); }
+
+/* Headline: "Ledare. Byggare. Nyfiken." – left-aligned, one colour per line */
+.roles { font: inherit; }
+.role { display: block; font-family: var(--font); font-size: var(--role-size); font-weight: 300; line-height: .96; letter-spacing: -.005em; padding-bottom: .01em; }
+.role b { color: var(--accent); font-size: .72em; }  /* the full stop */
+.role--leader { color: var(--text); }
+.role--builder { color: var(--blue); }
+.role--curious { margin-top: .24em; color: var(--accent); }  /* extra space: "Byggare" has descenders (g, y), so the visible gap matches the one above */
+
+@media (prefers-reduced-motion: no-preference) {
+  .role { animation: role-in .9s var(--ease) both; }
+  .role--builder { animation-delay: .1s; }
+  .role--curious { animation-delay: .2s; }
+  @keyframes role-in { from { opacity: 0; transform: translateY(.2em); } to { opacity: 1; transform: none; } }
+}
+
+/* Intro line + round avatar */
+.hero-intro {
+  --lede-size: clamp(1.45rem, 2.3vw, 2.05rem);
+  --avatar-unit: clamp(1.25rem, 1.95vw, 1.7rem);
+  position: relative; display: flex; align-items: flex-end; justify-content: flex-start;
+  gap: clamp(20px, 2.4vw, 36px); margin: clamp(6px, 1vw, 14px) 0 clamp(18px, 3.4svh, 34px);
+}
+
+/* A fixed, soft, round spotlight centred on "25 år i IT": just enough to layer the background. It slowly "breathes". */
+.hero-intro::before {
+  content: ""; position: absolute; z-index: -1; left: 34%; top: 50%; width: 150%; aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none;
+  background: radial-gradient(closest-side, rgba(112, 170, 214, .17) 0, rgba(112, 170, 214, .09) 45%, rgba(112, 170, 214, .03) 75%, transparent 100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-intro::before { animation: spotlight-breathe 7s ease-in-out infinite alternate; }  /* opacity only, so it is nearly free */
+  @keyframes spotlight-breathe { from { opacity: .35; } to { opacity: 1; } }
+}
+.lede { margin: 0; min-width: 0; max-width: 21ch; font: 350 var(--lede-size)/1.5 var(--font); letter-spacing: .01em; color: var(--body); }
+.lede strong { color: var(--text); font-weight: 400; }
+.avatar {
+  --avatar-size: calc(var(--avatar-unit) * 4.8);
+  flex: none; width: var(--avatar-size); height: var(--avatar-size); margin-bottom: calc(var(--lede-size) * .22);
+  padding: 3px; border: 2px solid #26424f; border-radius: 50%; background: #020406; object-fit: cover; pointer-events: none; user-select: none;
+}
+
+/* ----- Desktop: two equal columns (hero + file manager) ----- */
+@media (min-width: 1000px) {
+  /* One spacing token (--gutter) for left, right, top, bottom and the gap between columns */
+  :root { --hero-inset: var(--gutter); }
+  main { flex: 1 1 auto; }
+  .hero { flex: 1 1 auto; display: flex; flex-direction: row; align-items: stretch; gap: var(--gutter); min-height: 540px; padding: calc(var(--gutter) + 40px) var(--gutter) var(--gutter); }
+  .site-name { right: var(--gutter); }
+  /* Bright point of the grid sits on the intro line: 35% into the left column, one intro-line above the bottom padding */
+  .hero::before { --grid-x: calc(var(--gutter) + (100% - 3 * var(--gutter)) * .175); --grid-y: calc(100% - var(--gutter) - 3.5rem); }
+  .hero-copy { flex: 1 1 0; min-width: 0; width: auto; max-width: none; display: flex; flex-direction: column; }
+  /* The intro line stays on two lines: its size scales with the column width. The avatar keeps its height (--avatar-unit); the text is 78% of it. */
+  .hero-intro {
+    --avatar-unit: clamp(1.45rem, calc(((100cqw - var(--gutter)) / 2 - 44px) / 15.5), 3.2rem);
+    --lede-size: max(1.2rem, calc(var(--avatar-unit) * .78));
+    margin-top: auto; margin-bottom: 0;
+  }
+  .lede { max-width: 30ch; }  /* always breaks after "och" (see .lede-break) -> two lines */
+  .avatar { --avatar-size: calc(var(--avatar-unit) * 2.4); }
+}
+
+/* ----- Tablet: file manager below the hero copy ----- */
+@media (max-width: 999px) {
+  .hero { --role-size: clamp(3.4rem, 12.5vw, 7rem); display: flex; flex-direction: column; align-items: flex-start; min-height: 0; padding-bottom: 56px; }
+}
+
+/* ----- Mobile ----- */
+@media (max-width: 899px) {
+  :root { --hero-inset: 22px; }
+  .hero { --role-size: clamp(2.9rem, 19vw, 6.2rem); padding: 76px 22px 44px; }
+  .site-name { top: 18px; right: 22px; font-size: 16px; }
+  .terminal-prompt { top: -38px; }
+  .hero-intro { --lede-size: 1.2rem; gap: 16px; margin-top: 12px; margin-bottom: 14px; }
+  .lede { max-width: 20ch; }
+  .lede-break { display: none; }
+  .avatar { --avatar-size: calc(var(--avatar-unit) * 5); }
+}

@@ -1,0 +1,47 @@
+/* ==========================================================================
+   Design tokens: fonts, colours, spacing. Loaded first on every page.
+   Typeface: Selawik (self-hosted, SIL OFL) – metric-compatible with Segoe UI,
+   so the site looks the same on Windows, macOS and Linux.
+   ========================================================================== */
+
+@font-face { font-family: "Selawik"; src: url("../fonts/Selawik-Light.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Selawik"; src: url("../fonts/Selawik-Semilight.woff2") format("woff2"); font-weight: 350; font-display: swap; }
+@font-face { font-family: "Selawik"; src: url("../fonts/Selawik-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Selawik"; src: url("../fonts/Selawik-Semibold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Selawik"; src: url("../fonts/Selawik-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+:root {
+  /* Surfaces: near-black navy */
+  --bg: #080d13;
+  --surface: #111c29;
+  --border: #1d3342;
+
+  /* Text */
+  --text: #dde2e8;          /* headings and emphasis */
+  --text-2: #c3c9d1;        /* default body text */
+  --body: #cbd5e1;          /* readable secondary copy (slate-300) */
+  --muted: #9aa8b6;         /* de-emphasised, blue-grey */
+  --lime: #b8e04a;          /* site name in the top-right corner */
+
+  /* Accents: turquoise primary, muted blue secondary */
+  --accent: #399e9a;
+  --accent-hi: #52b8b3;
+  --blue: #5286b1;
+  --blue-hi: #7aa8d1;
+
+  /* "Engraved" hairlines: a dark edge plus a light edge */
+  --edge-dark: rgba(0, 0, 0, .55);
+  --edge-light: rgba(195, 202, 212, .1);
+
+  /* One typeface family for the whole site */
+  --font: "Selawik", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  --ease: cubic-bezier(.2, .75, .2, 1);
+
+  /* Layout */
+  --sidebar-width: 72px;
+  --gutter: clamp(60px, 4.5vw, 80px);          /* equal outer margin and column gap (desktop) */
+  --hero-inset: clamp(24px, 2vw, 38px);        /* left edge of the hero text (the grid aligns to it) */
+
+  color-scheme: dark;
+}

@@ -1,0 +1,98 @@
+/* ==========================================================================
+   File manager panel: a translucent "glass" window with a directory tree.
+   The technical grid of the hero (hero.css) shows faintly through it.
+   ========================================================================== */
+
+.file-manager {
+  position: relative; display: flex; flex-direction: column; container: file-manager / inline-size;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, 0) 28%), rgba(9, 15, 23, .46);
+  -webkit-backdrop-filter: blur(.6px); backdrop-filter: blur(.6px);
+  border: 1px solid var(--edge-dark); box-shadow: 1px 1px 0 var(--edge-light);
+}
+.file-manager::before { /* corner marks */
+  content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: .8;
+  background:
+    linear-gradient(var(--accent), var(--accent)) top left / 14px 1px no-repeat, linear-gradient(var(--accent), var(--accent)) top left / 1px 14px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) top right / 14px 1px no-repeat, linear-gradient(var(--accent), var(--accent)) top right / 1px 14px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) bottom left / 14px 1px no-repeat, linear-gradient(var(--accent), var(--accent)) bottom left / 1px 14px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) bottom right / 14px 1px no-repeat, linear-gradient(var(--accent), var(--accent)) bottom right / 1px 14px no-repeat;
+}
+
+/* Title bar and status bar */
+.file-manager-bar { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; border-bottom: 1px solid var(--edge-dark); box-shadow: 0 1px 0 var(--edge-light); }
+.file-manager-bar::after { /* ruler along the bottom edge of the title bar */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 1px; height: 4px; opacity: .55; pointer-events: none;
+  background: repeating-linear-gradient(90deg, rgba(195, 202, 212, .22) 0 1px, transparent 1px 8px);
+}
+.file-manager-path { font: 400 13px/1 var(--font); letter-spacing: .02em; color: var(--muted); }
+.file-manager-footer {
+  display: flex; justify-content: space-between; gap: 12px; padding: 12px 18px;
+  border-top: 1px solid var(--edge-dark); box-shadow: inset 0 1px 0 var(--edge-light);
+  font: 400 12px/1 var(--font); letter-spacing: .02em; color: var(--muted);
+}
+
+/* ----- Directory tree ----- */
+.tree { flex: 1; overflow: auto; padding: 20px 12px 18px 14px; scrollbar-width: thin; scrollbar-color: rgba(195, 202, 212, .28) transparent; }
+.tree-children { margin-left: 24px; }
+.tree-children > li { position: relative; padding-left: 13px; }
+.tree-children > li::before { /* connector line */
+  content: ""; position: absolute; left: 0; top: 0; width: 10px; height: 15px;
+  border-left: 1px solid rgba(195, 202, 212, .3); border-bottom: 1px solid rgba(195, 202, 212, .3);
+}
+.tree-children > li:not(:last-child)::after { content: ""; position: absolute; left: 0; top: 15px; bottom: 0; border-left: 1px solid rgba(195, 202, 212, .3); }
+.tree-node > summary { list-style: none; }
+.tree-node > summary::-webkit-details-marker { display: none; }
+
+.tree-row {
+  display: flex; align-items: center; gap: 10px; min-height: 31px; padding: 0 10px; border-radius: 2px; cursor: pointer;
+  font: 400 14px/1.3 var(--font); letter-spacing: .01em; text-decoration: none; color: var(--text-2);
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.tree-row:hover, .tree-node > summary:focus-visible, a.tree-row:focus-visible { background: rgba(57, 158, 154, .1); outline: none; }
+.icon { flex: none; width: 17px; height: 17px; color: var(--blue); transition: transform .25s var(--ease), color .2s var(--ease); }
+.tree-row:hover .icon { transform: translateX(2px); color: var(--blue-hi); }
+.row-name { flex: none; white-space: nowrap; }
+.row-desc { flex: 1; min-width: 0; font-size: 12.5px; }
+
+/* Root folder */
+.tree-node--root > summary { min-height: 36px; margin-bottom: 6px; font-size: 18px; }
+.tree-node--root > summary .row-name { font-weight: 700; letter-spacing: .01em; color: var(--muted); transition: color .2s var(--ease); }
+.tree-node--root > summary:hover .row-name { color: var(--text); }
+.tree-node--root > summary .icon { width: 20px; height: 20px; }
+
+/* Language folders */
+.tree-node:not(.tree-node--root) > summary .row-name { color: var(--muted); transition: color .2s var(--ease); }
+.tree-node:not(.tree-node--root) > summary:hover .row-name { color: var(--text); }
+
+/* Placeholder row ("no project yet") */
+.tree-row--empty { cursor: default; }
+.tree-row--empty .icon, .tree-row--empty .row-name { color: var(--muted); }
+.tree-row--empty:hover { background: none; }
+.tree-row--empty:hover .icon { transform: none; color: var(--muted); }
+
+/* Project row: bold title, regular description; the selected project gets an accent bar */
+.tree-row--project .row-name { font-weight: 700; color: var(--muted); }
+.tree-row--project .row-desc { font-weight: 400; color: var(--muted); transition: color .2s var(--ease); }
+.tree-row--project:hover .row-name, .tree-row--project:hover .row-desc { color: var(--text); }
+.tree-row--project[aria-current="true"] { background: rgba(57, 158, 154, .12); box-shadow: inset 2px 0 0 var(--accent); }
+
+/* Narrow panel: the description moves to its own line under the project name */
+@container file-manager (max-width: 500px) {
+  .tree-row--project { display: grid; grid-template-columns: 17px 1fr; gap: 1px 11px; align-items: start; padding-block: 7px; }
+  .tree-row--project .icon { margin-top: 2px; }
+  .tree-row--project .row-desc { grid-column: 2; }
+}
+
+/* ----- Placement ----- */
+@media (min-width: 1000px) {
+  /* Second hero column, same width as the hero copy; aligned with the site name (top) and the intro line (bottom).
+     `contain: size` stops the tree's content from stretching the hero: the panel always matches the hero's height
+     and a long tree scrolls inside it (the project card stays visible below the tree). */
+  .file-manager { flex: 1 1 0; min-width: 380px; margin: -40px 0 4px; contain: size; }
+}
+@media (max-width: 999px) {
+  .file-manager { width: min(100%, 640px); min-height: 330px; max-height: min(75svh, 640px); margin-top: 48px; }  /* a long tree scrolls inside the panel */
+}
+@media (max-width: 899px) {
+  .file-manager { width: 100%; min-height: 300px; max-height: min(75svh, 640px); margin-top: 36px; }
+}
